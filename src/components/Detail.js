@@ -9,18 +9,26 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { films } from "../share/ListOfFilms";
 import AddToQueueRoundedIcon from "@mui/icons-material/AddToQueueRounded";
 import "./Detail.css";
 import ModalCase from "./ModalCase";
+import axios from "axios";
 export default function Detail() {
-  const currentFilm = useParams();
-  const film = films.find((filmElement) => {
-    return filmElement.id == currentFilm.id;
-  });
+  const { id } = useParams();
   const [isOpen, setIsOpen] = useState(false);
+  const [film, setFilm] = useState({});
+  async function getDetail() {
+    const response = await axios.get(
+      `https://653a0844e3b530c8d9e8ff7d.mockapi.io/film/${id}`
+    );
+    if (response) setFilm(response.data);
+    console.log(film);
+  }
+  useEffect(() => {
+    getDetail();
+  }, []);
   const handleOpen = () => {
     setIsOpen(true);
   };
@@ -33,13 +41,13 @@ export default function Detail() {
     borderRadius: 1,
   };
   return (
-    <Container sx={{ py: "100px"}}>
+    <Container sx={{ py: "100px" }}>
       <Box sx={style}>
         <Card sx={{ position: "relative" }}>
           <CardMedia
             component="img"
+            image={film.imgLink}
             sx={{ objectFit: "cover", objectPosition: "center" }}
-            image={`../${film.imgLink}`}
           ></CardMedia>
           <div className="detail__button">
             <IconButton onClick={handleOpen}>
@@ -53,7 +61,9 @@ export default function Detail() {
           </CardContent>
         </Card>
       </Box>
-      {isOpen && <ModalCase isOpen={isOpen} handleClose={handleClose} film={film}/>}
+      {isOpen && (
+        <ModalCase isOpen={isOpen} handleClose={handleClose} film={film} />
+      )}
     </Container>
   );
 }

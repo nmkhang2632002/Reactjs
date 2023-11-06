@@ -9,10 +9,11 @@ import {
   Typography,
 } from "@mui/material";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
-import { films } from "../share/ListOfFilms";
-// import { useState } from "react";
+// import { films } from "../share/ListOfFilms";
+import { useEffect, useState } from "react";
 // import CloseIcon from "@mui/icons-material/Close";
 import { Link } from "react-router-dom";
+import axios from "axios";
 export default function Film() {
   // const [open, setOpen] = useState(false);
   // const [currentFilm, setCurrentFilm] = useState([]);
@@ -33,18 +34,30 @@ export default function Film() {
   //   boxShadow: 24,
   //   borderRadius: 1,
   // };
-  const styleHover = {'&:hover': {
-    opacity: 0.4,
-  }};
+  const [films, setFilms] = useState([]);
+  const baseURL = "https://653a0844e3b530c8d9e8ff7d.mockapi.io/film";
+  useEffect(() => {
+    const getFilm = async () => {
+      const data = await axios.get(baseURL);
+      setFilms(data.data);
+      console.log(films);
+    };
+    getFilm();
+  }, []);
+  const styleHover = {
+    "&:hover": {
+      opacity: 0.4,
+    },
+  };
   return (
-    <Container sx={{ pt: "100px", pb:'40px' }}>
+    <Container sx={{ pt: "100px", pb: "40px" }}>
       <Grid container spacing={2}>
         {films.map((film) => (
           <Grid sx={styleHover} item sm={6} md={4} lg={3} key={film.id}>
             <Button
-              // onClick={() => {
-              //   handleOpen(film);
-              // }}
+            // onClick={() => {
+            //   handleOpen(film);
+            // }}
             >
               <Link className="link" to={`/detail/${film.id}`}>
                 <Card variant="outlined" sx={{ minWidth: "200px" }}>
